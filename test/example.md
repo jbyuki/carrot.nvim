@@ -5,7 +5,7 @@ Let's check the neovim version
 ```lua
 print(vim.inspect(vim.version()))
 ```
-```output[14]
+```output[3](05/06/22 13:45:07)
 {
   api_compatible = 0,
   api_level = 9,
@@ -21,7 +21,7 @@ Printing is done with a regular print.
 ```lua
 print("Hello world!")
 ```
-```output[15]
+```output[4](05/06/22 13:45:10)
 Hello world!
 ```
 
@@ -32,7 +32,7 @@ for i=1,10 do
   print(i)
 end
 ```
-```output[16]
+```output[2](05/06/22 13:45:02)
 1
 2
 3
@@ -50,6 +50,7 @@ In case of an error, it's simply print out.
 ```lua
 local a =
 ```
-```output[17]
+```output[1](05/06/22 13:44:58)
 [string "local a =..."]:2: unexpected symbol near '<eof>'
+```
 ```

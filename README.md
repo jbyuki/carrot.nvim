@@ -26,7 +26,7 @@ local parser = vim.treesitter.get_parser(buf, "markdown")
 assert(parser, "The markdown parser is not installed.")
 print("OK")
 ```
-```output[13]
+```output[1](05/06/22 13:41:59)
 OK
 ```
 

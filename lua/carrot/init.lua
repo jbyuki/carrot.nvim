@@ -109,11 +109,14 @@ function M.execute_normal()
                   if next_node and next_node:type() == "fenced_code_block" then
                     local params = { bufnr, next_node:range() }
                     table.insert(params, {})
+                    local row_count = vim.api.nvim_buf_line_count(bufnr)
+                    params[4] = math.min(params[4], row_count-1)
+
                     vim.api.nvim_buf_set_text(unpack(params))
                   end
 
                   local lines = {}
-                  table.insert(lines, ("```output[%d]"):format(cell_idx))
+                  table.insert(lines, ("```output[%d](%s)"):format(cell_idx, os.date("%x %X")))
                   cell_idx = cell_idx + 1
                   if not msg:match("^%s*$") then
                     for line in vim.gsplit(msg, "\n") do
