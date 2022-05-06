@@ -16,6 +16,8 @@ local print_results = {}
 
 local server_chunk = ""
 
+local cell_idx = 1
+
 local end_row
 
 local log_filename
@@ -103,27 +105,23 @@ function M.execute_normal()
 
                 vim.schedule(function()
                   _, _, end_row, _ = code_node:range()
-                  while true do
-                    local row_count = vim.api.nvim_buf_line_count(bufnr)
-                    if end_row >= row_count then
-                      break
-                    end
-
-                    local line = vim.api.nvim_buf_get_lines(bufnr, end_row, end_row+1, true)[1]
-                    if line:match("^>") then
-                      vim.api.nvim_buf_set_lines(bufnr, end_row, end_row+1, true, {})
-                    else
-                      break
-                    end
+                  local next_node = code_node:next_sibling()
+                  if next_node and next_node:type() == "fenced_code_block" then
+                    local params = { bufnr, next_node:range() }
+                    table.insert(params, {})
+                    vim.api.nvim_buf_set_text(unpack(params))
                   end
 
+                  local lines = {}
+                  table.insert(lines, ("```output[%d]"):format(cell_idx))
+                  cell_idx = cell_idx + 1
                   if not msg:match("^%s*$") then
-                    local lines = vim.split(msg, "\n")
-                    for i=1,#lines do
-                      lines[i] = "> " .. lines[i]
+                    for line in vim.gsplit(msg, "\n") do
+                      table.insert(lines, line)
                     end
-                    vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
                   end
+                  table.insert(lines, "```")
+                  vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 
                 end)
 

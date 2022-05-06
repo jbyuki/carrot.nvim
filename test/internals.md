@@ -11,7 +11,9 @@ local code = "a = 2"
 f = loadstring(code)
 print(f)
 ```
-> function: 0x02d82b69fd18
+```output[1]
+function: 0x0199e8fa2a70
+```
 
 The loadstring takes as parameter the code as a string and returns a function. We can call the function to execute the code. This seems a little odd to do, why is not the lua code directly executed, but actually it allows to catch any syntax error in the code. If for example, we pass a incorrect code to `loadstring`, we get:
 
@@ -21,8 +23,10 @@ f, errmsg = loadstring(code)
 print(f)
 print(errmsg)
 ```
-> nil
-> [string "a = "]:1: unexpected symbol near '<eof>'
+```output[2]
+nil
+[string "a = "]:1: unexpected symbol near '<eof>'
+```
 
 A second return value indicates the syntax error. So we have to make sure this is not the case.
 
@@ -34,7 +38,9 @@ f = loadstring(code)
 f()
 print(a)
 ```
-> 2
+```output[3]
+2
+```
 
 It behaves normally i.e. the code executed with loadstring live in the same environnement as the host code. The value of a can be set in the code and print out afterwards.
 
@@ -63,7 +69,9 @@ local kernel = vim.fn.jobstart({vim.v.progpath, '--embed', '--headless'}, {rpc =
 print(kernel)
 vim.fn.jobstop(kernel)
 ```
-> 3
+```output[4]
+3
+```
 
 We can communicate to this Neovim instance by using the RPC protocol. This allows to execute any API function, in particular for Lua, we are interested in `nvim_exec_lua`.
 
@@ -73,13 +81,17 @@ local ret = vim.rpcrequest(kernel, "nvim_exec_lua", [[return "hello from child p
 print(ret)
 vim.fn.jobstop(kernel)
 ```
-> hello from child process
+```output[5]
+hello from child process
+```
 
 Any value which is returned by the Lua code can be retrieved with the return value of `rpcrequest`. It shows that we can nicely execute lua code in a separate environnement. This opens a lot of possibilities. Let's have a process opened and do some experiments.
 
 ```lua
 kernel = vim.fn.jobstart({vim.v.progpath, '--embed', '--headless'}, {rpc = true})
 vim.rpcrequest(kernel, "nvim_exec_lua", [[function foo() return "hello world" end]], {})
+```
+```output[6]
 ```
 
 This defines a function. We can now call it later because the environnement is preserved.
@@ -88,7 +100,9 @@ This defines a function. We can now call it later because the environnement is p
 local ret = vim.rpcrequest(kernel, "nvim_exec_lua", [[return foo()]], {})
 print(ret)
 ```
-> hello world
+```output[7]
+hello world
+```
 
 We can redefine `print()` safely without touching the user's environnement.
 
@@ -99,6 +113,8 @@ vim.rpcrequest(kernel, "nvim_exec_lua", [[
   end
 ]], {})
 ```
+```output[8]
+```
 
 Now, let's try calling the redefined print.
 
@@ -106,6 +122,8 @@ Now, let's try calling the redefined print.
 vim.rpcrequest(kernel, "nvim_exec_lua", [[
   print("hello")
 ]], {})
+```
+```output[9]
 ```
 
 And we can get the printed string back.
@@ -116,4 +134,6 @@ local ret = vim.rpcrequest(kernel, "nvim_exec_lua", [[
 ]], {})
 print(ret)
 ```
-> hello :)
+```output[11]
+hello :)
+```

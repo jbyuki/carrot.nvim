@@ -6,7 +6,9 @@ Execute Neovim Lua code inside Markdown.
 ```lua
 print("Hover a code block and execute it.")
 ```
-> Hover a code block and execute it.
+```output[12]
+Hover a code block and execute it.
+```
 
 ## Prerequisites
 
@@ -22,7 +24,9 @@ local parser = vim.treesitter.get_parser(buf, "markdown")
 assert(parser, "The markdown parser is not installed.")
 print("OK")
 ```
-> OK
+```output[13]
+OK
+```
 
 ## Usage 
 
