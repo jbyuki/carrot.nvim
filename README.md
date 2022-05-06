@@ -18,7 +18,7 @@ This is still a work-in-progress. More features to come.
 ### Prerequisites
 
 * Neovim 0.7.0+
-* Tree-sitter : (nvim-treesitter/nvim-treesitter)[https://github.com/nvim-treesitter/nvim-treesitter]
+* Tree-sitter : [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 * Markdown parser : Install with `TSInstall markdown`.
 
 ### Usage 
@@ -29,7 +29,7 @@ This is still a work-in-progress. More features to come.
 ### Examples
 
 * [example.md](test/example.md)
-* [example_swan.md](test/swan_example.md)
+* [example_swan.md](test/example_swan.md)
 
 ### Name
 
