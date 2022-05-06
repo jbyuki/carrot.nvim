@@ -107,12 +107,8 @@ function M.execute_normal()
                   _, _, end_row, _ = code_node:range()
                   local next_node = code_node:next_sibling()
                   if next_node and next_node:type() == "fenced_code_block" then
-                    local params = { bufnr, next_node:range() }
-                    table.insert(params, {})
-                    local row_count = vim.api.nvim_buf_line_count(bufnr)
-                    params[4] = math.min(params[4], row_count-1)
-
-                    vim.api.nvim_buf_set_text(unpack(params))
+                    local start_row, _, end_row, _ = next_node:range()
+                    vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, true, {})
                   end
 
                   local lines = {}
