@@ -218,11 +218,15 @@ function M.create_client(port)
 end
 
 function M.redefine_print()
-  print = function(str)
-    if type(str) ~= "string" then
-      str = tostring(str)
+  print = function(...)
+    local strs = {}
+    for _, elem in ipairs({ ... }) do
+      if type(elem) ~= "string" then
+        elem = tostring(elem)
+      end
+      table.insert(strs, elem)
     end
-    table.insert(print_results, str)
+    table.insert(print_results, table.concat(strs, " "))
   end
 end
 

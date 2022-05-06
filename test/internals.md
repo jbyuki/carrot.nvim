@@ -12,7 +12,7 @@ f = loadstring(code)
 print(f)
 ```
 ```output[1]
-function: 0x0199e8fa2a70
+function: 0x022c741ae588
 ```
 
 The loadstring takes as parameter the code as a string and returns a function. We can call the function to execute the code. This seems a little odd to do, why is not the lua code directly executed, but actually it allows to catch any syntax error in the code. If for example, we pass a incorrect code to `loadstring`, we get:
@@ -24,7 +24,7 @@ print(f)
 print(errmsg)
 ```
 ```output[2]
-nil
+
 [string "a = "]:1: unexpected symbol near '<eof>'
 ```
 
@@ -123,7 +123,7 @@ vim.rpcrequest(kernel, "nvim_exec_lua", [[
   print("hello")
 ]], {})
 ```
-```output[9]
+```output[10]
 ```
 
 And we can get the printed string back.
@@ -134,6 +134,7 @@ local ret = vim.rpcrequest(kernel, "nvim_exec_lua", [[
 ]], {})
 print(ret)
 ```
-```output[11]
+```output[13]
 hello :)
 ```
+
