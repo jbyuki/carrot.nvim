@@ -8,6 +8,8 @@ local kernel, server, sock
 
 local send_code
 
+local client
+
 local client_chunk = ""
 
 local print_results = {}
@@ -164,9 +166,8 @@ function M.execute_normal()
 end
 
 function M.create_client(port)
-  local client = vim.loop.new_tcp()
-
   client = vim.loop.new_tcp()
+
   client:connect("127.0.0.1", port, function(err)
     if err then
       M.log("client " .. err)
@@ -185,25 +186,29 @@ function M.create_client(port)
 
           print_results = {}
 
-          local f, errmsg = loadstring(lua_code)
-          if not f then
-            client:write(errmsg .. "\0")
-          end
 
-          if f then
-            local success, errmsg = pcall(f)
-            M.log(("client execute %s %s"):format(success, errmsg))
-
-            if not success then
-              client:write(errmsg .. "\n")
+          vim.schedule(function()
+            local f, errmsg = loadstring(lua_code)
+            if not f then
+              client:write(errmsg .. "\0")
             end
 
-            if success then
-              M.log(vim.inspect(print_results))
-              client:write(table.concat(print_results, "\n") .. "\0")
-            end
+            if f then
+              local success, errmsg = pcall(f)
+              M.log(("client execute %s %s"):format(success, errmsg))
 
-          end
+              if not success then
+                client:write(errmsg .. "\0")
+              end
+
+              if success then
+                M.log(vim.inspect(print_results))
+                client:write(table.concat(print_results, "\n") .. "\0")
+              end
+
+            end
+          end)
+
           client_chunk = client_chunk:sub(N+1)
         end
 
@@ -230,7 +235,8 @@ end
 function M.log(str)
   if log_filename then
     local f = io.open(log_filename, "a")
-    f:write(str .. "\n")
+    date = os.date("%x %X")
+    f:write("[" .. date .. "]: " .. str .. "\n")
     f:close()
   end
 end

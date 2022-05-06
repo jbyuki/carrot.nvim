@@ -148,11 +148,13 @@ function M.create_client(port)
   @connect_client
 end
 
+@variables+=
+local client
+
 @create_tcp_client+=
-local client = vim.loop.new_tcp()
+client = vim.loop.new_tcp()
 
 @connect_client+=
-client = vim.loop.new_tcp()
 client:connect("127.0.0.1", port, function(err)
   if err then
     M.log("client " .. err)
@@ -182,12 +184,16 @@ if client_chunk:find("\0") then
   local lua_code = client_chunk:sub(1, N-1)
 
   @clear_print_list
-  @load_lua_code
-  if f then
-    @execute_lua_code
-    @if_error_send_msg
-    @if_success_send_prints
-  end
+
+  vim.schedule(function()
+    @load_lua_code
+    if f then
+      @execute_lua_code
+      @if_error_send_msg
+      @if_success_send_prints
+    end
+  end)
+
   client_chunk = client_chunk:sub(N+1)
 end
 
@@ -203,7 +209,7 @@ M.log(("client execute %s %s"):format(success, errmsg))
 
 @if_error_send_msg+=
 if not success then
-  client:write(errmsg .. "\n")
+  client:write(errmsg .. "\0")
 end
 
 @redefine_print_in_instance+=

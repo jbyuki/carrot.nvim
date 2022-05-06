@@ -11,7 +11,8 @@ end
 function M.log(str)
   if log_filename then
     local f = io.open(log_filename, "a")
-    f:write(str .. "\n")
+    date = os.date("%x %X")
+    f:write("[" .. date .. "]: " .. str .. "\n")
     f:close()
   end
 end
