@@ -28,8 +28,8 @@ This is still a work-in-progress. More features to come.
 
 ### Examples
 
-* (example.md)[test/example.md]
-* (example_swan.md)[test/swan_example.md]
+* [example.md](test/example.md)
+* [example_swan.md](test/swan_example.md)
 
 ### Name
 
@@ -41,6 +41,6 @@ There are more mature plugins that have similar functionnalities.
 
 Some examples:
 
-* (jubnzv/mdeval.nvim)[https://github.com/jubnzv/mdeval.nvim] - Run code blocks in Markdown.
-* (bfredl/nvim-luadev)[https://github.com/bfredl/nvim-luadev] - Execute Neovim Lua with a proper REPL.
-* (ii14/nrepl.nvim)[https://github.com/ii14/nrepl.nvim] - Cool plugin which offers seamless REPL experience for Neovim Lua and Vimscript.
+* [jubnzv/mdeval.nvim](https://github.com/jubnzv/mdeval.nvim) - Run code blocks in Markdown.
+* [bfredl/nvim-luadev](https://github.com/bfredl/nvim-luadev) - Execute Neovim Lua with a proper REPL.
+* [ii14/nrepl.nvim](https://github.com/ii14/nrepl.nvim) - Cool plugin which offers seamless REPL experience for Neovim Lua and Vimscript.
