@@ -19,9 +19,11 @@ Make sure that the markdown parser is installed with:
 ```lua
 local buf = vim.api.nvim_create_buf(false, true)
 local parser = vim.treesitter.get_parser(buf, "markdown")
-print(parser)
+assert(parser, "The markdown parser is not installed.")
+print("OK")
 ```
-> table: 0x016d2946f6c8
+> OK
+
 
 ## Usage 
 
