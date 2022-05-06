@@ -256,13 +256,13 @@ if server_chunk:find("\0") then
 end
 
 @append_msg_to_markdown+=
-local lines = vim.split(msg, "\n")
-for i=1,#lines do
-  if #lines[i] > 0 then
+if not msg:match("^%s*$") then
+  local lines = vim.split(msg, "\n")
+  for i=1,#lines do
     lines[i] = "> " .. lines[i]
   end
+  vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 end
-vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 
 @variables+=
 local end_row

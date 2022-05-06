@@ -24,7 +24,6 @@ print("OK")
 ```
 > OK
 
-
 ## Usage 
 
 * Hover the cursor over a lua code block
@@ -33,3 +32,5 @@ print("OK")
 ## Examples
 
 * [example.md](test/example.md)
+* [internals.md](test/internals.md)
+
