@@ -1,6 +1,6 @@
-## carrot.nvim
+# carrot.nvim
 
-Execute Neovim Lua code inside markdown.
+Execute Neovim Lua code inside Markdown.
 
 ```lua
 print("Hello carrot.nvim!")
@@ -8,34 +8,38 @@ print("Hello carrot.nvim!")
 > Hello carrot.nvim!
 
 
-### Features
+## Features
 
 This is still a work-in-progress. More features to come.
 
-* Execute cell and append result
-* Asynchronous evaluation
+* Sandboxed execution
+* Output redirection (just by using `print`)
 
-### Prerequisites
+## Prerequisites
 
 * Neovim 0.7.0+
 * Tree-sitter : [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 * Markdown parser : Install with `TSInstall markdown`.
 
-### Usage 
+## Usage 
 
 * Hover the cursor over a lua code block
 * Execute `:CarrotEval`
 
-### Examples
+## Examples
 
 * [example.md](test/example.md)
 * [example_swan.md](test/example_swan.md)
 
-### Name
+## Name
 
 I like carrots. They are good.
 
-### Related
+## Technical notes
+
+This could have been much simpler if I didn't decide to support `print` redirection. This is really tricky to do. One possibility is to simplify redefine the global variable but I feel uncomfortable doing it. Instead I'm spawing a separate neovim instance where I redefine it there and execute the Lua code. All the results are communicated with a TCP server/client.
+
+## Related
 
 There are more mature plugins that have similar functionnalities.
 
