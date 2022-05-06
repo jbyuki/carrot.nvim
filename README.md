@@ -1,14 +1,16 @@
-# carrot.nvim
+# carrot.nvim ![license](https://img.shields.io/github/license/jbyuki/carrot.nvim) ![version](https://img.shields.io/badge/version-0.0.1-blue)
 
-Execute Neovim Lua code inside Markdown.
+Markdown evaluator for Neovim Lua code blocks. This is intended to replicate the Jupyter Notebook experience in Neovim with builtin tools.
 
+This is nice because it allows to post and send intermediary results which are directly visible on GitHub.
 
-```lua
-print("Hover a code block and execute it.")
-```
-```output[12]
-Hover a code block and execute it.
-```
+This is still _work-in-progress_ but the main code evaluation functionnalities should be working.
+
+The plugins tries to be **not intrusive**. It won't redefine `print()` to redirect the result, it uses a subprocess neovim to evaluate the code in a sandboxed environnement.
+
+It also tries to keep the spirit of Markdown files and show results in a simple but pleasing way.
+
+![carrot screenshot](https://raw.githubusercontent.com/jbyuki/gifs/main/carrot.png)
 
 ## Prerequisites
 
