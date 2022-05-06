@@ -2,11 +2,11 @@
 
 Markdown evaluator for Neovim Lua code blocks. 
 
-It allows to output the result in the markdown. This is nice because it allows to save and share the code with the results.
-
 This is still _work-in-progress_ but the main code evaluation functionnalities should be working.
 
-The plugins tries to be **not intrusive**. It won't redefine `print()` to redirect the result, it uses a subprocess neovim to evaluate the code in a sandboxed environnement.
+The plugin will detect the code blocks under the cursor using **treesitter**'s query mechanism, execute it, and show the results directly in the markdown.
+
+It tries to be **not intrusive**. It won't redefine `print()` to redirect the result, it uses a subprocess neovim to evaluate the code in a sandboxed safe environnement.
 
 It also tries to keep the spirit of Markdown files and show results in a simple but pleasing way.
 
