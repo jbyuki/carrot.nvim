@@ -1,8 +1,8 @@
 # carrot.nvim ![license](https://img.shields.io/github/license/jbyuki/carrot.nvim) ![version](https://img.shields.io/badge/version-0.0.1-blue)
 
-Markdown evaluator for Neovim Lua code blocks. This is intended to replicate the Jupyter Notebook experience in Neovim with builtin tools.
+Markdown evaluator for Neovim Lua code blocks. 
 
-This is nice because it allows to post and send intermediary results which are directly visible on GitHub.
+It allows to output the result in the markdown. This is nice because it allows to save and share the code with the results.
 
 This is still _work-in-progress_ but the main code evaluation functionnalities should be working.
 
