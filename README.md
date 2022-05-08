@@ -30,6 +30,19 @@ print("OK")
 OK
 ```
 
+## Install
+
+Install using your prefered method:
+- [vim-plug](https://github.com/junegunn/vim-plug).
+```vim
+Plug 'jbyuki/carrot.nvim'
+```
+
+- [packer.nvim](https://github.com/wbthomason/packer.nvim)
+```lua
+use "jbyuki/carrot.nvim"
+```
+
 ## Usage 
 
 * Hover the cursor over a lua code block
