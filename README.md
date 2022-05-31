@@ -48,6 +48,11 @@ use "jbyuki/carrot.nvim"
 * Hover the cursor over a lua code block
 * Execute `:CarrotEval`
 
+## Commands 
+
+* `:CarrotEval` : Evaluate the code block under the cursor
+* `:CarrotNewBlock` : Create a new lua codeblock and put the cursor inside it
+
 ## Examples
 
 * [example.md](test/example.md)

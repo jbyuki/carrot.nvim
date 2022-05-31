@@ -22,6 +22,20 @@ local end_row
 
 local log_filename
 
+function M.create_new_block()
+  local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+
+  local lua_block = {
+    "```lua",
+    "",
+    "```",
+  }
+
+  vim.api.nvim_buf_set_lines(0, row, row, true, lua_block)
+
+  vim.api.nvim_win_set_cursor(0, {row+2, 0})
+end
+
 function M.execute_normal()
   local ft = vim.api.nvim_buf_get_option(0, "ft")
 
