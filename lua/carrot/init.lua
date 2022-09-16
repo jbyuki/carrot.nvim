@@ -62,7 +62,10 @@ function M.execute_normal()
     end
 
 
-    assert(code_node:type() == "fenced_code_block", "Cursor not on a fenced_code_block node!")
+    if not code_node or code_node:type() ~= "fenced_code_block" then
+      vim.api.nvim_echo({{"Cursor not on a fenced_code_block node!", "ErrorMsg"}}, false, {})
+      return
+    end
 
     -- Example node structure for code_node
     --

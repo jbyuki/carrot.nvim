@@ -49,7 +49,10 @@ local selected_node = tree:root():descendant_for_range(
 
 @get_node_node_for_code_block
 
-assert(code_node:type() == "fenced_code_block", "Cursor not on a fenced_code_block node!")
+if not code_node or code_node:type() ~= "fenced_code_block" then
+  vim.api.nvim_echo({{"Cursor not on a fenced_code_block node!", "ErrorMsg"}}, false, {})
+  return
+end
 
 @get_node_node_for_code_block+=
 code_node = selected_node
