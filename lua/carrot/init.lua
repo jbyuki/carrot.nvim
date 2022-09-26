@@ -102,7 +102,7 @@ function M.execute_normal()
         if log_filename then
           vim.rpcnotify(kernel, 'nvim_exec_lua', [[require"carrot".enable_log()]], {})
         end
-        local server = vim.loop.new_tcp()
+        server = vim.loop.new_tcp()
         server:bind("127.0.0.1", 0)
         server:listen(128, function(err)
           assert(not err, err)  -- Check for errors.
@@ -258,6 +258,18 @@ function M.log(str)
     f:close()
   end
 end
+function M.stop()
+  if kernel then
+    vim.fn.jobstop(kernel)
+    kernel = nil
+  end
+
+  if server then
+    server:close()
+    server = nil
+  end
+end
+
 
 function M.version()
   return "0.0.1"

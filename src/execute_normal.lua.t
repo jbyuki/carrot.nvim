@@ -101,7 +101,7 @@ kernel = vim.fn.jobstart({vim.v.progpath, '--embed', '--headless'}, {rpc = true}
 M.log(("kernel %s"):format(kernel))
 
 @create_server+=
-local server = vim.loop.new_tcp()
+server = vim.loop.new_tcp()
 server:bind("127.0.0.1", 0)
 server:listen(128, function(err)
   assert(not err, err)  -- Check for errors.
