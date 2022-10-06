@@ -6,16 +6,16 @@ function M.execute_normal()
     @get_current_code_region_using_ts
     @get_language_of_current_code_region
     if lang == "lua" then
+      @add_current_to_queue
       bufnr = vim.api.nvim_get_current_buf()
       if not kernel then
         @spawn_neovim_instance
         @enable_debug_if_enabled_in_server
         @create_server
-        @set_callback_to_send_first_code
         @redefine_print_in_instance
         @create_client_in_instance
       else
-        @send_code_to_client
+        @run_next_in_queue
       end
     else
       print("Unsupported language!")
@@ -31,7 +31,7 @@ local bufnr
 @get_filetype+=
 local ft = vim.api.nvim_buf_get_option(0, "ft")
 
-@get_current_code_region_using_ts+=
+@get_ts_tree+=
 local parser = vim.treesitter.get_parser()
 assert(parser , "Treesitter not enabled in current buffer!")
 
@@ -42,6 +42,8 @@ assert(#tree > 0, "Parsing current buffer failed!")
 tree = tree[1]
 root = tree:root()
 
+@get_current_code_region_using_ts+=
+@get_ts_tree
 @get_cursor_position
 
 local selected_node = tree:root():descendant_for_range(
@@ -81,17 +83,26 @@ local query = vim.treesitter.parse_query("markdown", ts_query)
 local lang, content
 
 for id, node, metadata in query:iter_captures(code_node, 0) do
-  local name = query.captures[id]
-  local start_row, start_col, end_row, end_col = node:range()
-  local text = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
-
-  if name == "lang" then
-    lang = text[1]
-  elseif name == "content" then
-    content = text
-  end
+  @get_lang_and_content
 end
 
+@get_lang_and_content+=
+local name = query.captures[id]
+local start_row, start_col, end_row, end_col = node:range()
+@correct_index
+local text = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
+
+if name == "lang" then
+  lang = text[1]
+elseif name == "content" then
+  content = text
+end
+
+@correct_index+=
+if end_row == vim.api.nvim_buf_line_count(0) then
+  end_row = end_row - 1
+  end_col = #(vim.api.nvim_buf_get_lines(0, -2, -1, false)[1])
+end
 
 @variables+=
 local kernel, server, sock
@@ -121,29 +132,12 @@ server:listen(128, function(err)
     end
   end)
 
-  @send_first_code
+  @run_next_in_queue
 end)
 M.log("server started on port " .. server:getsockname().port)
 
 @create_client_in_instance+=
 vim.rpcnotify(kernel, 'nvim_exec_lua', [[require"carrot".create_client(...)]], { server:getsockname().port })
-
-@variables+=
-local send_code
-
-@set_callback_to_send_first_code+=
-send_code = function()
-  M.log("server send " .. table.concat(content, "\n"))
-  sock:write(table.concat(content, "\n") .. "\0")
-end
-
-@send_first_code+=
-send_code()
-send_code = nil
-
-@send_code_to_client+=
-M.log("server send " .. table.concat(content, "\n"))
-sock:write(table.concat(content, "\n") .. "\0")
 
 @define+=
 function M.create_client(port)
@@ -212,7 +206,8 @@ M.log(("client execute %s %s"):format(success, errmsg))
 
 @if_error_send_msg+=
 if not success then
-  client:write(table.concat(print_results, "\n") .. "\n" .. errmsg .. "\0")
+  table.insert(print_results, errmsg)
+  client:write(table.concat(print_results, "\n") .. "\0")
 end
 
 @redefine_print_in_instance+=
@@ -257,6 +252,7 @@ if server_chunk:find("\0") then
   vim.schedule(function()
     @remove_previous_results
     @append_msg_to_markdown
+    @run_next_in_queue
   end)
 
   server_chunk = server_chunk:sub(N+1)
@@ -281,8 +277,8 @@ vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 local end_row
 
 @remove_previous_results+=
-_, _, end_row, _ = code_node:range()
-local next_node = code_node:next_sibling()
+_, _, end_row, _ = last_node:range()
+local next_node = last_node:next_sibling()
 if next_node and next_node:type() == "fenced_code_block" then
   local start_row, _, end_row, _ = next_node:range()
   vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, true, {})

@@ -1,6 +1,7 @@
 ##carrot
 @define+=
 function M.stop()
+  @clear_queue
   @close_neovim_instance
   @close_server
 end
