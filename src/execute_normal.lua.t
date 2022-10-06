@@ -212,7 +212,7 @@ M.log(("client execute %s %s"):format(success, errmsg))
 
 @if_error_send_msg+=
 if not success then
-  client:write(vim.inspect(print_results) .. "\n" .. errmsg .. "\0")
+  client:write(table.concat(print_results, "\n") .. "\n" .. errmsg .. "\0")
 end
 
 @redefine_print_in_instance+=
