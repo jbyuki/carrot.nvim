@@ -130,10 +130,7 @@ function M.execute_all()
                 local next_node = last_node:next_sibling()
                 if next_node and next_node:type() == "fenced_code_block" then
                   local start_row, _, end_row, _ = next_node:range()
-                  if vim.api.nvim_buf_line_count(0) == end_row then
-                    end_row = end_row - 1
-                  end
-                  vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, true, {})
+                  vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, false, {})
                 end
 
                 local lines = {}
@@ -304,10 +301,7 @@ function M.execute_normal()
                   local next_node = last_node:next_sibling()
                   if next_node and next_node:type() == "fenced_code_block" then
                     local start_row, _, end_row, _ = next_node:range()
-                    if vim.api.nvim_buf_line_count(0) == end_row then
-                      end_row = end_row - 1
-                    end
-                    vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, true, {})
+                    vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, false, {})
                   end
 
                   local lines = {}
