@@ -52,6 +52,8 @@ use "jbyuki/carrot.nvim"
 
 * `:CarrotEval` : Evaluate the code block under the cursor
 * `:CarrotNewBlock` : Create a new lua codeblock and put the cursor inside it
+* `:CarrotStop` : Stop the kernel
+* `:CarrotEvalAll` : Evaluate all the code blocks in the document sequentially
 
 ## Examples
 
