@@ -212,7 +212,7 @@ function M.create_client(port)
               M.log(("client execute %s %s"):format(success, errmsg))
 
               if not success then
-                client:write(errmsg .. "\0")
+                client:write(vim.inspect(print_results) .. "\n" .. errmsg .. "\0")
               end
 
               if success then
