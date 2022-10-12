@@ -5,6 +5,7 @@ function M.execute_all()
   if ft == "markdown" then
     @get_all_code_blocks
     @queue_code_execution_run_all
+    run_all = true
     local bufnr = vim.api.nvim_get_current_buf()
     if not kernel then
       @spawn_neovim_instance
@@ -17,6 +18,9 @@ function M.execute_all()
     end
   end
 end
+
+@variables+=
+local run_all = false
 
 @get_all_code_blocks+=
 @get_ts_tree
@@ -56,11 +60,9 @@ local fifo = {}
 fifo = {}
 
 @queue_code_execution_run_all+=
-for i=#nodes,1,-1 do
-  table.insert(fifo, {
-    contents[i], nodes[i]
-  })
-end
+table.insert(fifo, {
+  contents[1], nodes[1]
+})
 
 @variables+=
 local last_node
@@ -82,3 +84,23 @@ end
 table.insert(fifo, {
   content, code_node
 })
+
+@append_to_queue_if_run_all+=
+@get_ts_tree
+@get_all_fenced_code_blocks
+
+if run_all then
+  for i=1,#nodes do
+    local start_row, _, _, _ = nodes[i]:range()
+    if start_row > end_row then
+      table.insert(fifo, {
+        contents[i], nodes[i]
+      })
+      break
+    end
+  end
+
+  if #fifo == 0 then
+    run_all = false
+  end
+end

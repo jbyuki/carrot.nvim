@@ -5,6 +5,7 @@ function M.execute_normal()
   if ft == "markdown" then
     @get_current_code_region_using_ts
     @get_language_of_current_code_region
+    run_all = false
     if lang == "lua" then
       @add_current_to_queue
       bufnr = vim.api.nvim_get_current_buf()
@@ -252,6 +253,7 @@ if server_chunk:find("\0") then
   vim.schedule(function()
     @remove_previous_results
     @append_msg_to_markdown
+    @append_to_queue_if_run_all
     @run_next_in_queue
   end)
 

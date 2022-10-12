@@ -1,5 +1,7 @@
 -- Generated using ntangle.nvim
 local M = {}
+local run_all = false
+
 local fifo = {}
 
 local last_node
@@ -93,12 +95,11 @@ function M.execute_all()
     end
 
 
-    for i=#nodes,1,-1 do
-      table.insert(fifo, {
-        contents[i], nodes[i]
-      })
-    end
+    table.insert(fifo, {
+      contents[1], nodes[1]
+    })
 
+    run_all = true
     local bufnr = vim.api.nvim_get_current_buf()
     if not kernel then
       kernel = vim.fn.jobstart({vim.v.progpath, '--embed', '--headless'}, {rpc = true})
@@ -144,6 +145,72 @@ function M.execute_all()
                 table.insert(lines, "```")
                 vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 
+                local parser = vim.treesitter.get_parser()
+                assert(parser , "Treesitter not enabled in current buffer!")
+
+                local tree = parser:parse()
+                local block_lang = ""
+                assert(#tree > 0, "Parsing current buffer failed!")
+
+                tree = tree[1]
+                root = tree:root()
+
+                local ts_query = [[
+                  (fenced_code_block 
+                    (info_string (language) @lang) 
+                    (code_fence_content) @content) @block
+                ]]
+
+                local query = vim.treesitter.parse_query("markdown", ts_query)
+                local contents = {}
+                local nodes = {}
+
+                for pattern, match, metadata in query:iter_matches(root, 0) do
+                  local lang, content, block
+                  for id, node in pairs(match) do
+                    local name = query.captures[id]
+                    local start_row, start_col, end_row, end_col = node:range()
+                    if end_row == vim.api.nvim_buf_line_count(0) then
+                      end_row = end_row - 1
+                      end_col = #(vim.api.nvim_buf_get_lines(0, -2, -1, false)[1])
+                    end
+
+                    local text = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
+
+                    if name == "lang" then
+                      lang = text[1]
+                    elseif name == "content" then
+                      content = text
+                    end
+
+                    if name == "block" then
+                      block = node
+                    end
+                  end
+
+
+                  if lang == "lua" then
+                    table.insert(contents, content)
+                    table.insert(nodes, block)
+                  end
+                end
+
+
+                if run_all then
+                  for i=1,#nodes do
+                    local start_row, _, _, _ = nodes[i]:range()
+                    if start_row > end_row then
+                      table.insert(fifo, {
+                        contents[i], nodes[i]
+                      })
+                      break
+                    end
+                  end
+
+                  if #fifo == 0 then
+                    run_all = false
+                  end
+                end
                 if #fifo > 0 then
                   vim.schedule(function()
                     local content, node = unpack(fifo[#fifo])
@@ -266,10 +333,12 @@ function M.execute_normal()
 
     end
 
+    run_all = false
     if lang == "lua" then
       table.insert(fifo, {
         content, code_node
       })
+
       bufnr = vim.api.nvim_get_current_buf()
       if not kernel then
         kernel = vim.fn.jobstart({vim.v.progpath, '--embed', '--headless'}, {rpc = true})
@@ -315,6 +384,72 @@ function M.execute_normal()
                   table.insert(lines, "```")
                   vim.api.nvim_buf_set_lines(bufnr, end_row, end_row, true, lines)
 
+                  local parser = vim.treesitter.get_parser()
+                  assert(parser , "Treesitter not enabled in current buffer!")
+
+                  local tree = parser:parse()
+                  local block_lang = ""
+                  assert(#tree > 0, "Parsing current buffer failed!")
+
+                  tree = tree[1]
+                  root = tree:root()
+
+                  local ts_query = [[
+                    (fenced_code_block 
+                      (info_string (language) @lang) 
+                      (code_fence_content) @content) @block
+                  ]]
+
+                  local query = vim.treesitter.parse_query("markdown", ts_query)
+                  local contents = {}
+                  local nodes = {}
+
+                  for pattern, match, metadata in query:iter_matches(root, 0) do
+                    local lang, content, block
+                    for id, node in pairs(match) do
+                      local name = query.captures[id]
+                      local start_row, start_col, end_row, end_col = node:range()
+                      if end_row == vim.api.nvim_buf_line_count(0) then
+                        end_row = end_row - 1
+                        end_col = #(vim.api.nvim_buf_get_lines(0, -2, -1, false)[1])
+                      end
+
+                      local text = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
+
+                      if name == "lang" then
+                        lang = text[1]
+                      elseif name == "content" then
+                        content = text
+                      end
+
+                      if name == "block" then
+                        block = node
+                      end
+                    end
+
+
+                    if lang == "lua" then
+                      table.insert(contents, content)
+                      table.insert(nodes, block)
+                    end
+                  end
+
+
+                  if run_all then
+                    for i=1,#nodes do
+                      local start_row, _, _, _ = nodes[i]:range()
+                      if start_row > end_row then
+                        table.insert(fifo, {
+                          contents[i], nodes[i]
+                        })
+                        break
+                      end
+                    end
+
+                    if #fifo == 0 then
+                      run_all = false
+                    end
+                  end
                   if #fifo > 0 then
                     vim.schedule(function()
                       local content, node = unpack(fifo[#fifo])
