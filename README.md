@@ -16,7 +16,7 @@ It also tries to keep the spirit of Markdown files and show results in a simple 
 
 * Neovim 0.7.0+
 * Tree-sitter : [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
-* Markdown parser : Install with `TSInstall markdown` and `TSInstall markdown_line`.
+* Markdown parser : Install with `TSInstall markdown` and `TSInstall markdown_inline`.
 
 Make sure that the markdown parser is installed with:
 
