@@ -33,7 +33,13 @@ local ts_query = [[
     (code_fence_content) @content) @block
 ]]
 
-local query = vim.treesitter.parse_query("markdown", ts_query)
+local query 
+if vim.treesitter.query and vim.treesitter.query.parse then
+	query = vim.treesitter.query.parse("markdown", ts_query)
+else
+	query = vim.treesitter.parse_query("markdown", ts_query)
+end
+
 local contents = {}
 local nodes = {}
 
