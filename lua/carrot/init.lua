@@ -73,6 +73,9 @@ function M.execute_all()
     for pattern, match, metadata in query:iter_matches(root, 0) do
       local lang, content, block
       for id, node in pairs(match) do
+        if type(node) == "table" then 
+          node = node[1]
+        end
         local name = query.captures[id]
         local start_row, start_col, end_row, end_col = node:range()
         if end_row == vim.api.nvim_buf_line_count(0) then
@@ -180,6 +183,9 @@ function M.execute_all()
                 for pattern, match, metadata in query:iter_matches(root, 0) do
                   local lang, content, block
                   for id, node in pairs(match) do
+                    if type(node) == "table" then 
+                      node = node[1]
+                    end
                     local name = query.captures[id]
                     local start_row, start_col, end_row, end_col = node:range()
                     if end_row == vim.api.nvim_buf_line_count(0) then
@@ -333,6 +339,9 @@ function M.execute_normal()
     local lang, content
 
     for id, node, metadata in query:iter_captures(code_node, 0) do
+      if type(node) == "table" then 
+        node = node[1]
+      end
       local name = query.captures[id]
       local start_row, start_col, end_row, end_col = node:range()
       if end_row == vim.api.nvim_buf_line_count(0) then
@@ -430,6 +439,9 @@ function M.execute_normal()
                   for pattern, match, metadata in query:iter_matches(root, 0) do
                     local lang, content, block
                     for id, node in pairs(match) do
+                      if type(node) == "table" then 
+                        node = node[1]
+                      end
                       local name = query.captures[id]
                       local start_row, start_col, end_row, end_col = node:range()
                       if end_row == vim.api.nvim_buf_line_count(0) then

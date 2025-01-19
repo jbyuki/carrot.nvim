@@ -93,6 +93,9 @@ for id, node, metadata in query:iter_captures(code_node, 0) do
 end
 
 @get_lang_and_content+=
+if type(node) == "table" then 
+  node = node[1]
+end
 local name = query.captures[id]
 local start_row, start_col, end_row, end_col = node:range()
 @correct_index
