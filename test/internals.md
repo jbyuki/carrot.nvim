@@ -56,7 +56,7 @@ We need to create a whole separate Lua environnement where we can freely redefin
 * Spawn a whole new Neovim instance.
 
 The thread approach is interesting because it's "lightweight" in terms of code and execution. The only issue is that the code execution in a thread is very limited. 
-  * It does not support every function that Neovim Lua has. This is mainly due to the thread not having its own event loop.
+  * It does not support every function that Neovim Lua has.
   * The thread can communicate to the main thread with `vim.loop.new_async` and `async_send`, but the opposite is not possible. We need bidirectional communication.
   * The thread cannot be yielded or resumed.
 
